@@ -2,7 +2,7 @@
 
 int addMonsters(Level*level){
     int x;
-    level->monsters=malloc(sizeof(Monster*)*12);
+    level->monsters=malloc(sizeof(Monster*)*6);
     level->numberOfMonsters=0;
     for(x=0; x<level->numberOfRooms; x++){
         if((rand()%2)==0){
@@ -83,7 +83,7 @@ Monster*creatMonster(char symbol, int health, int attack, int speed, int defence
 
     sprintf(newMonster->string, "%c", symbol);
 
-    newMonster->position==malloc(sizeof(Position));
+    newMonster->position=malloc(sizeof(Position));
 
     return newMonster;
 }
@@ -97,8 +97,6 @@ int killMonster(Monster*monster){
 int setStartingPosition(Monster*monster, Room*room){
     monster->position->x=(rand()%(room->width -2))+room->position.x + 1;
     monster->position->y=(rand()%(room->height -2))+room->position.y + 1;
-
-    mvprintw(monster->position->y, monster->position->x, monster->string);
 
 }
 int moveMonsters(Level*level){

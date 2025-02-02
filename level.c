@@ -14,11 +14,13 @@ Level*createLevel(int level){
     newLevel=malloc(sizeof(Level));
 
     newLevel->level=level;
-    newLevel->numberOfRooms=7;
+    newLevel->numberOfRooms=6;
     newLevel->rooms=roomsSetUp();
+    connectDoors(newLevel);
     newLevel->tiles=saveLevelPositions();
 
     newLevel->user = playerSetUp();
+    placePlayer(newLevel->rooms, newLevel->user);
 
     addMonsters(newLevel);
 
@@ -26,55 +28,67 @@ Level*createLevel(int level){
 }
 
 Room ** roomsSetUp(){
+    int x;
     Room ** rooms;
     rooms = malloc(sizeof(Room*)*14);
-    if(rooms==NULL){
-        return NULL;
+
+    for(x=0; x<6;x++){
+        rooms[x]=createRoom(x,4);
+        drawRoom(rooms[x]);
     }
-
-    rooms[0]=createRoom(3, 10, 4, 6);
-    drawRoom(rooms[0]);
-
-
-    rooms[1]=createRoom(10, 2, 5, 6);
-    drawRoom(rooms[1]);
-
-
-    rooms[2]=createRoom(15, 10, 6, 6);
-    drawRoom(rooms[2]);
-
-
-    rooms[3]=createRoom(25, 2, 6, 6);
-    drawRoom(rooms[3]);
-
-
-    rooms[4]=createRoom(40, 2, 7, 6);
-    drawRoom(rooms[4]);
-
-
-    rooms[5]=createRoom(30, 10, 6, 4);
-    drawRoom(rooms[5]);
-
-
-    rooms[6]=createRoom(43, 10, 6, 6);
-    drawRoom(rooms[6]);
     
-    connectDoors(rooms[0]->doors[3], rooms[2]->doors[1]);
-    connectDoors(rooms[1]->doors[2], rooms[0]->doors[0]);
+    //connectDoors(rooms[0]->doors[3], rooms[2]->doors[1]);
+    //pathFind(rooms[0]->doors[3], rooms[2]->doors[1]);
+    //connectDoors(rooms[1]->doors[2], rooms[0]->doors[0]);
 
     return rooms;
+}
+void connectDoors(Level*level){
+
+    int i,j;
+    int randomRoom, randomDoor;
+    int count;
+
+    for(i=0; i<level->numberOfRooms; i++){
+        for(j=0; j<level->rooms[i]->numberOfDoors; j++){
+
+            if(level->rooms[i]->doors[j]->connected==1){
+                continue;
+            }
+
+            count=0;
+            while(count<2){
+
+                randomRoom=rand() % level->numberOfRooms;
+                randomDoor=rand() % level->rooms[randomRoom]->numberOfDoors;
+
+                if(level->rooms[randomRoom]->doors[randomDoor]->connected==1 || randomRoom==1){
+                    count++;
+                    continue;
+                }
+
+                pathFind(&level->rooms[randomRoom]->doors[randomDoor]->position, &level->rooms[i]->doors[j]->position);
+
+                level->rooms[randomRoom]->doors[randomDoor]->connected=1;
+                level->rooms[i]->doors[j]->connected=1;
+                break;
+            }
+
+
+        }
+    }
 }
 
 char ** saveLevelPositions(){
     int x,y;
-    char ** Positions;
-    Positions= malloc(sizeof(char*)*25);
+    char ** positions;
+    positions= malloc(sizeof(char*)*25);
 
-    for(y=0; y<25; y++){
-        Positions[y]=malloc(sizeof(char)*100);
-        for(x=0; x<100; x++){
-            Positions[y][x]=mvinch(y,x);
+    for(y=0; y<MAX_HEIGHT; y++){
+        positions[y]=malloc(sizeof(char)*100);
+        for(x=0; x<MAX_WIDTH; x++){
+            positions[y][x]=mvinch(y,x);
         }
     }
-    return Positions;
+    return positions;
 }

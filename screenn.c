@@ -1,9 +1,13 @@
 #include "rogue.h"
 
 int screenSetUp(){
+
+    MAX_HEIGHT= 25;
+    MAX_WIDTH= 100;
+    
     initscr();
-    printw("HellloWorld!");
     noecho();
+    keypad(stdscr, TRUE);
     refresh();
 
     srand(time(NULL));

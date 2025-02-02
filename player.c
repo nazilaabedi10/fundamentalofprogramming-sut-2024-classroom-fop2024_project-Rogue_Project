@@ -3,77 +3,83 @@
 Player*playerSetUp(){
 Player*newPlayer;
 newPlayer = malloc(sizeof(Player));
+newPlayer->position = malloc(sizeof(Position));
 
-newPlayer->position.x=14;
-newPlayer->position.y=14;
 newPlayer->health=20;
-
-mvprintw(newPlayer->position.y, newPlayer->position.x, "@");
-move(newPlayer->position.y, newPlayer->position.x);
-refresh();
+newPlayer->attack=1;
+newPlayer->gold=0;
+newPlayer->exp=0;
+newPlayer->maxHealth=20;
 
 return newPlayer;
+}
 
+int placePlayer(Room**rooms, Player*user){
+    user->position->x=rooms[3]->position.x+1;
+    user->position->y=rooms[3]->position.y+1;
+
+    mvprintw(user->position->y, user->position->x, "@");
+    move(user->position->y, user->position->x);
 }
 int handleInput(int input, Player*user){
 
-    int newY;
-    int newX;
+    Position*newPosition;
+    newPosition=malloc(sizeof(Position));
     switch(input){
         //move up
         case 'j':
         case 'J':
-        newY=user->position.y-1;
-        newX=user->position.x;
+        newPosition->y=user->position.y-1;
+        newPosition->x=user->position.x;
             break;
 
         //move down
         case 'k':
         case 'K':
-            newY=user->position.y+1;
-            newX=user->position.x;
+            newPosition->y=user->position->y+1;
+            newPosition->x=user->position->x;
             break; 
 
         //move left
         case 'h':
         case 'H':
-            newY=user->position.y;
-            newX=user->position.x-1;
+            newPosition->y=user->position->y;
+            newPosition->x=user->position->x-1;
             break;
 
         //move right
         case 'l':
         case 'L':
-            newY=user->position.y;
-            newX=user->position.x+1;
+            newPosition->y=user->position->y;
+            newPosition->x=user->position->x+1;
             break;
 
         //move northeast
         case 'u':
         case 'U':
-            newY=user->position.y-1;
-            newX=user->position.x+1;
+            newPosition->y=user->position->y-1;
+            newPosition->x=user->position->x+1;
             break;
 
         //move northwest
         case 'y':
         case 'Y':
-            newY=user->position.y-1;
-            newX=user->position.x-1;
+            newPosition->x=user->position->y-1;
+            newPosition->x=user->position->x-1;
             break;
 
         //move southeast
         case 'n':
         case 'N':
-            newY=user->position.y+1;
-            newX=user->position.x+1;
+            newPosition->y=user->position->y+1;
+            newPosition->x=user->position->x+1;
             break;
 
         //move southwest
         case 'b':
         case 'B':
-            newY=user->position.y+1;
-            newX=user->position.x-1;
+            newPosition->y=user->position->y+1;
+            newPosition->x=user->position->x-1;
 
         default:
             break;
